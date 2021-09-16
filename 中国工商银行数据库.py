@@ -11,6 +11,10 @@ print("|------------4、转账              ------------|")
 print("|------------5、查询              ------------|")
 print("|------------6、退出              ------------|")
 print("==============================================")
+bank={}#创建一个空的字典
+#开户逻辑
+bank_name="狼腾测试猿银行"
+# 第一个对应第一个 不是名称对应名称
 conn = pymysql.connect(
         host="localhost",
         user="root",
@@ -181,13 +185,15 @@ def transferMoney():
                 if card2 is None:
                     return Return(1)
                 else:
+                    cursor.execute("SELECT * FROM add_user where username='%s' " % user2)
+                    data1 = cursor.fetchone()
                     while True:
                         turn_money = float(input("请输入您要转的金额: "))
                         if turn_money > have_money:
                             print("对不起,您没有那么多钱,请重新输入")
                         else:
                             your_card_money = float(data[7]) - turn_money
-                            his_card_money = float(data[7]) + turn_money
+                            his_card_money = float(data1[7]) + turn_money
                             cursor.execute(
                                 "UPDATE add_user SET money = '%s' WHERE username = '%s' " % (your_card_money, user))
                             conn.commit()
