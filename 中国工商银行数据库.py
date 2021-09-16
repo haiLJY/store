@@ -11,10 +11,6 @@ print("|------------4、转账              ------------|")
 print("|------------5、查询              ------------|")
 print("|------------6、退出              ------------|")
 print("==============================================")
-bank={}#创建一个空的字典
-#开户逻辑
-bank_name="狼腾测试猿银行"
-# 第一个对应第一个 不是名称对应名称
 conn = pymysql.connect(
         host="localhost",
         user="root",
@@ -72,6 +68,14 @@ def adduser():  # 定义了一个方法
                 cursor.execute(sql_insert, date)
                 conn.commit()
                 cursor.close()
+                print("------------个人信息 - -----------")
+                print("账号： %s" % account)
+                print("用户名: %s" % username)
+                print("密码： *****")
+                print("地址： %s %s %s %s" % (country, province, street, door))
+                print("余额： %s" % date[7])
+                print("开户行名称： %s" % bank_name)
+                print("--------------------------------")
         else:
             print("密码长度必须是6位！！！")
     else:
@@ -90,7 +94,17 @@ def select():
         for i in range(3):
             pswd = input("请输入您的密码: ")
             if pswd == data[2]:
-                print("您有金额: ", data[7])
+                info = '''
+                                             ------------个人信息------------
+                                             账号：%s
+                                             用户名:%s
+                                             密码：*****
+                                             地址：%s%s%s%s
+                                             余额：%s
+                                             开户行名称：%s
+                                             --------------------------------
+                                                                           '''
+                print(info % (data[0], data[1], data[3], data[4], data[5], data[6], data[7], data[9]))
                 break
             else:
                 print("对不起,您输入的密码错误")
@@ -172,15 +186,15 @@ def transferMoney():
                         if turn_money > have_money:
                             print("对不起,您没有那么多钱,请重新输入")
                         else:
-                            my_card_money = float(data[7]) - turn_money
+                            your_card_money = float(data[7]) - turn_money
                             his_card_money = float(data[7]) + turn_money
                             cursor.execute(
-                                "UPDATE add_user SET money = '%s' WHERE username = '%s' " % (my_card_money, user))
+                                "UPDATE add_user SET money = '%s' WHERE username = '%s' " % (your_card_money, user))
                             conn.commit()
                             cursor.execute(
                                 "UPDATE add_user SET money = '%s' WHERE username = '%s' " % (his_card_money, user2))
                             conn.commit()
-                            print("恭喜你转账成功,你还有", my_card_money, "元")
+                            print("恭喜你转账成功,你还有", your_card_money, "元")
                             break
                 break
             else:
